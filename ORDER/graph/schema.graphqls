@@ -1,0 +1,8 @@
+type Order @key(fields: "id") {
+  id: ID!
+  localId: String!
+}
+
+extend type Query {
+  order: Order
+}
