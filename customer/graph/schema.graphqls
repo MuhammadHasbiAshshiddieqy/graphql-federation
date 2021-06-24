@@ -1,0 +1,15 @@
+type Customer {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  companyName: String!
+  email: String!
+  phone: String!
+  profileId: Int!
+}
+
+extend type Order @key(fields: "id") {
+  id: ID! @external
+  customerId: Int!
+  customer: Customer
+}

@@ -1,0 +1,29 @@
+type Order @key(fields: "id") {
+  id: ID!
+  localId: String!
+  localName: String!
+  payment: OrderPayment
+  address: OrderAddress
+}
+
+type OrderPayment {
+  id: ID!
+  paymentMethod: String
+}
+
+type OrderAddress {
+  id: ID!
+  name: String
+  address1: String
+  address2: String
+  subDistrict: String
+  district: String
+  city: String
+  province: String
+  postalCode: String
+  coordinate: String
+}
+
+extend type Query {
+  order(id: Int!): Order
+}
