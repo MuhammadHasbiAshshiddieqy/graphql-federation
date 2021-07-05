@@ -14,7 +14,16 @@ func (r *entityResolver) FindOrderByID(ctx context.Context, id string) (*model.O
 	channel := &model.Channel{}
 	relationId := &model.Order{}
 
-	err := r.ORDER.Select("channel_id, account_id").Where("id = ?", id).First(&relationId).Error
+	var profileIDInt *int
+	profileIDInt = new(int)
+
+	profileID := ctx.Value(Key{}).(string)
+	*profileIDInt = fixProfileID(profileID)
+	if (*profileIDInt == 0) {
+		return nil, nil
+	}
+
+	err := r.ORDER.Select("channel_id, account_id").Where("profile_id = ? AND id = ?", *profileIDInt, id).First(&relationId).Error
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +33,7 @@ func (r *entityResolver) FindOrderByID(ctx context.Context, id string) (*model.O
 		return nil, err
 	}
 
-	err = r.APRA.Where("id = ?", intToString(relationId.AccountID)).First(&account).Error
+	err = r.APRA.Where("profile_id = ? AND id = ?", *profileIDInt, intToString(relationId.AccountID)).First(&account).Error
 	if err != nil {
 		return nil, err
 	}

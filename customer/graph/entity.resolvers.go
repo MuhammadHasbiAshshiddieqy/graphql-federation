@@ -13,12 +13,21 @@ func (r *entityResolver) FindOrderByID(ctx context.Context, id string) (*model.O
 	customer := &model.Customer{}
 	customerId := &model.Order{}
 
-	err := r.ORDER.Select("customer_id").Where("id = ?", id).First(&customerId).Error
+	var profileIDInt *int
+	profileIDInt = new(int)
+
+	profileID := ctx.Value(Key{}).(string)
+	*profileIDInt = fixProfileID(profileID)
+	if (*profileIDInt == 0) {
+		return nil, nil
+	}
+
+	err := r.ORDER.Select("customer_id").Where("profile_id = ? AND id = ?", *profileIDInt, id).First(&customerId).Error
 	if err != nil {
 		return nil, err
 	}
 
-	err = r.APRA.Where("id = ?", intToString(customerId.CustomerID)).First(&customer).Error
+	err = r.APRA.Where("profile_id = ? AND id = ?", *profileIDInt, intToString(customerId.CustomerID)).First(&customer).Error
 	if err != nil {
 		return nil, err
 	}

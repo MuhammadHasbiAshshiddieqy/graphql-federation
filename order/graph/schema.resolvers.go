@@ -7,6 +7,7 @@ import (
 	"context"
 	"order/graph/generated"
 	"order/graph/model"
+	"fmt"
 )
 
 func (r *queryResolver) Order(ctx context.Context, id int) (*model.Order, error) {
@@ -14,17 +15,30 @@ func (r *queryResolver) Order(ctx context.Context, id int) (*model.Order, error)
 	orderAddress := &model.OrderAddress{}
 	order := &model.Order{}
 
-	err := r.ORDER.Where("order_id = ?", intToString(id)).First(&orderAddress).Error
+	var profileIDInt *int
+	profileIDInt = new(int)
+
+	profileID := ctx.Value(Key{}).(string)
+	fmt.Println(profileID)
+	*profileIDInt = fixProfileID(profileID)
+	if (*profileIDInt == 0) {
+		return nil, nil
+	}
+
+	err := r.ORDER.Where("profile_id = ? AND id = ?", *profileIDInt, intToString(id)).First(&order).Error
+	if err != nil {
+		return nil, err
+	}
+	if len(order.ID) == 0 {
+		return nil, nil
+	}
+
+	err = r.ORDER.Where("order_id = ?", intToString(id)).First(&orderAddress).Error
 	if err != nil {
 		return nil, err
 	}
 
 	err = r.ORDER.Where("order_id = ?", intToString(id)).First(&orderPayment).Error
-	if err != nil {
-		return nil, err
-	}
-
-	err = r.ORDER.Where("id = ?", intToString(id)).First(&order).Error
 	if err != nil {
 		return nil, err
 	}
