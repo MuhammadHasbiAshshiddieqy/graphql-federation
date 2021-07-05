@@ -1,5 +1,7 @@
+require('dotenv').config()
 const { ApolloServer } = require('apollo-server');
 const { ApolloGateway, RemoteGraphQLDataSource } = require("@apollo/gateway");
+const request = require('request-promise');
 
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
   willSendRequest({ request, context }) {
@@ -21,18 +23,42 @@ const gateway = new ApolloGateway({
     },
 });
 
+async function getData(req) {
+  var payload = {
+      uri: `${process.env.USER_URL}/dashboard_user`,
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': req.headers.authorization,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36'
+      }
+  };
+  return await request.get(payload)
+      .then(async function (data) {
+          var data = JSON.parse(data);
+          if(data.data.dashboard_user !== 'null'){
+              return {datauser:data.data.dashboard_user}
+          } else if (data.data.channel_user !== 'null') {
+              return {datauser:data.data.dashboard_user}
+          } else if (data.data.admin_user !== 'null') {
+              return {datauser:data.data.admin_user}
+          } else {
+              throw new Error(`payload: ${JSON.stringify(payload)}, response: ${JSON.stringify(data)}`)
+          }
+      })
+      .catch(function (err) {
+          throw new Error(err.message)
+      });
+}
+
 const server = new ApolloServer({
   gateway,
   subscriptions: false,
   context: ({ req }) => {
-            // // Get the user token from the headers
-            // const token = req.headers.authorization || '';
-            // // Try to retrieve a user with the token
-            // const userId = getUserId(token);
-            // // Add the user ID to the context
-            // return { userId };
-            const profileId = "{\"profile_id\": 186}"
-            return { profileId }
+            return getData(req)
+            .then(async function (data) {
+              profileId = `{\"profile_id\": ${data.datauser.profile_id}}`
+              return { profileId }
+            })
           },
 });
 

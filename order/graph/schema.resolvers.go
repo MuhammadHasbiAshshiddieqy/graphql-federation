@@ -7,7 +7,6 @@ import (
 	"context"
 	"order/graph/generated"
 	"order/graph/model"
-	"fmt"
 )
 
 func (r *queryResolver) Order(ctx context.Context, id int) (*model.Order, error) {
