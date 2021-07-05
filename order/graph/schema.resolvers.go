@@ -19,7 +19,6 @@ func (r *queryResolver) Order(ctx context.Context, id int) (*model.Order, error)
 	profileIDInt = new(int)
 
 	profileID := ctx.Value(Key{}).(string)
-	fmt.Println(profileID)
 	*profileIDInt = fixProfileID(profileID)
 	if (*profileIDInt == 0) {
 		return nil, nil
