@@ -1,0 +1,15 @@
+{
+  "name": "apollo-pokemon",
+  "version": "1.0.0",
+  "description": "pokemon graphql server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Hasbi",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/gateway": "^0.39.0",
+    "apollo-server": "^3.3.0"
+  }
+}

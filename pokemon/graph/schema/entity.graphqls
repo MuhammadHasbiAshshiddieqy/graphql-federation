@@ -1,0 +1,3 @@
+extend type Trainer @key(fields: "id") {
+  id: Int! @external
+}

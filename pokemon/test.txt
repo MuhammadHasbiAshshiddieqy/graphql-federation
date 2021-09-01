@@ -1,0 +1,73 @@
+========================= ENV ============================
+export DATA_POKEMON="root:@tcp(localhost:8000)/dbpokemon"
+
+======================== QUERY ===========================
+1. =======>
+query {
+  pokemons{
+    id
+    number
+    name
+    types {
+      id
+      typeName
+    }
+  }
+}
+======================= MUTATION =========================
+1. =======>
+mutation createPokemon ($input: CreatePokemonInput!) {
+  createPokemon(input: $input) {
+  	message
+    pokemon{
+      id
+      number
+      name
+      types {
+        id
+        pokemonId
+        typeName
+      }
+    }
+  }
+}
+2. =======>
+mutation updatePokemon ($input: UpdatePokemonInput!) {
+  updatePokemon(input: $input) {
+  	message
+  }
+}
+3. =======>
+mutation deletePokemon ($input: DeletePokemonInput!) {
+  deletePokemon(input: $input) {
+  	message
+  }
+}
+=== QUERY VAR ===
+1. =======>
+{
+  "input": {
+    "name": "Megamon",
+    "types": [
+      "Water",
+      "Ice"
+    ]
+  }
+}
+2. =======>
+{
+  "input": {
+    "id": "5be2b5a0-ddb5-4a21-a1db-52fde470afb5",
+    "name": "Megamoon",
+    "types": [
+      "WATER",
+      "FIRE"
+    ]
+  }
+}
+3. =======>
+{
+  "input": {
+    "id": "5be2b5a0-ddb5-4a21-a1db-52fde470afb5"
+  }
+}

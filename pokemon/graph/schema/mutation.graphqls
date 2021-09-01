@@ -1,0 +1,29 @@
+type Mutation {
+  createPokemon(input: CreatePokemonInput!): CreateResponse!
+  updatePokemon(input: UpdatePokemonInput!): BasicResponse!
+  deletePokemon(input: DeletePokemonInput!): BasicResponse!
+}
+
+input CreatePokemonInput {
+  name: String!
+  types:[String!]!
+}
+
+input UpdatePokemonInput {
+  id: String!
+  name: String
+  types:[String]
+}
+
+input DeletePokemonInput {
+  id: String!
+}
+
+type CreateResponse {
+  message: String!
+  pokemon: Pokemon!
+}
+
+type BasicResponse {
+  message: String!
+}

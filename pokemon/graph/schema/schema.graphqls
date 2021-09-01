@@ -1,0 +1,14 @@
+type Pokemon {
+  id: ID!
+  trainerId: Int
+  number: String!
+  name: String!
+  types: [Type!]!
+  trainer: Trainer
+}
+
+type Type {
+  id: Int!
+  pokemonId: String!
+  typeName: String!
+}

@@ -1,0 +1,6 @@
+type Trainer @key(fields: "id") {
+  id: Int!
+  teamId: Int
+  name: String!
+  team: Team
+}
